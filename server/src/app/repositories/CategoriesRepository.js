@@ -1,13 +1,10 @@
 const db = require('../../database');
 
-class ContactRepository {
+class CategoriesRepository {
   async findAll(orderBy = 'ASC') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
     const rows = await db.query(`
-      SELECT contacts. *, categories.name AS category_name
-      FROM contacts 
-      LEFT JOIN categories ON categories.id = contacts.category_id
-      ORDER BY contacts.name ${direction}
+      SELECT * FROM categories ORDER BY name ${direction}
     `);
 
     return rows;
@@ -15,10 +12,7 @@ class ContactRepository {
 
   async findById(id) {
     const [row] = await db.query(`
-    SELECT contacts. *, categories.name AS category_name
-    FROM contacts 
-    LEFT JOIN categories ON categories.id = contacts.category_id
-    WHERE contacts.id = $1
+    SELECT * FROM contacts WHERE id = $1
   `, [id]);
 
     return row;
@@ -33,15 +27,15 @@ class ContactRepository {
   }
 
   async create({
-    name, email, phone, category_id,
+    name,
   }) {
     const [row] = await db.query(
       `
-      INSERT INTO contacts(name, email, phone,category_id)
-      VALUES($1, $2, $3, $4)
+      INSERT INTO categories(name)
+      VALUES($1)
       RETURNING *
       `,
-      [name, email, phone, category_id],
+      [name],
     );
 
     return row;
@@ -68,4 +62,4 @@ class ContactRepository {
   }
 }
 
-module.exports = new ContactRepository();
+module.exports = new CategoriesRepository();
