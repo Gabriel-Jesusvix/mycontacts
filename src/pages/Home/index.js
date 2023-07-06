@@ -1,7 +1,7 @@
+import { Link } from 'react-router-dom';
 import arrow from '../../assets/image/icons/arrow.svg';
 import edit from '../../assets/image/icons/edit.svg';
 import trash from '../../assets/image/icons/trash.svg';
-
 import {
   Card,
   Container,
@@ -19,7 +19,7 @@ export function Home() {
 
       <Header>
         <strong>3 Contatos</strong>
-        <a href="/">Novo Contato</a>
+        <Link to="/new">Novo Contato</Link>
       </Header>
 
       <ListContainer>
@@ -42,9 +42,9 @@ export function Home() {
           </div>
 
           <div className="actions">
-            <a href="/">
+            <Link to="/edit/123">
               <img src={edit} alt="editar contato" />
-            </a>
+            </Link>
             <button type="button">
               <img src={trash} alt="botão de remover contato" />
             </button>
