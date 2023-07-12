@@ -4,7 +4,9 @@ import { PageHeader } from '../../components/PageHeader';
 export function NewContact() {
   return (
     <div>
-      <PageHeader />
+      <PageHeader
+        title="Novo Contato"
+      />
       <ContactForm
         buttonLabel="Cadastrar"
       />
