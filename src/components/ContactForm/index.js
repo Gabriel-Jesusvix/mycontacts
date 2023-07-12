@@ -1,5 +1,9 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+
+import isValidEmail from '../../utils/isEmailValid';
+import formatPhone from '../../utils/formatPhone';
+import useErrors from '../../hooks/useErrors';
 import { FormGroup } from '../FormGroup';
 import { Form, ButtonContainer } from './styles';
 import { Input } from '../Input';
@@ -11,46 +15,65 @@ export function ContactForm({ buttonLabel }) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [category, setCategory] = useState('');
-  const [errors, setErrors] = useState([]);
+  const {
+    setError, removeError, getErrorMessageByFiledName, errors,
+  } = useErrors();
+  const isFormValid = (name && errors.length === 0);
 
   function handleNameChange(event) {
     setName(event.target.value);
     if (!event.target.value) {
-      setErrors((prevState) => [
-        ...prevState,
-        { filed: 'name', message: 'nome é obrigatório' },
-      ]);
+      setError({ filed: 'name', message: 'Nome é obrigatório' });
     } else {
-      setErrors((prevState) => prevState.filter((error) => error.filed !== 'name'));
+      removeError('name');
     }
   }
+
+  function handleEmailChange(event) {
+    setEmail(event.target.value);
+    if (event.target.value && !isValidEmail(event.target.value)) {
+      setError({ filed: 'email', message: 'E-mail inválido' });
+    } else {
+      removeError('email');
+    }
+  }
+
+  function handlePhoneChange(event) {
+    setPhone(formatPhone(event.target.value));
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     console.log({
-      name, email, phone, category,
+      name, email, phone: phone.replace(/\D/g, ''), category,
     });
   }
+
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormGroup>
+    <Form onSubmit={handleSubmit} noValidate>
+      <FormGroup error={getErrorMessageByFiledName('name')}>
         <Input
-          placeholder="Nome"
+          error={getErrorMessageByFiledName('name')}
+          placeholder="Nome *"
           value={name}
           onChange={handleNameChange}
         />
       </FormGroup>
-      <FormGroup>
+      <FormGroup error={getErrorMessageByFiledName('email')}>
         <Input
+          error={getErrorMessageByFiledName('email')}
           placeholder="E-mail"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={handleEmailChange}
+          type="email"
         />
       </FormGroup>
       <FormGroup>
         <Input
           placeholder="Telefone"
           value={phone}
-          onChange={(event) => setPhone(event.target.value)}
+          onChange={handlePhoneChange}
+          maxLength="15"
         />
       </FormGroup>
       <FormGroup>
@@ -66,7 +89,7 @@ export function ContactForm({ buttonLabel }) {
       </FormGroup>
       <ButtonContainer>
 
-        <Button type="submit">
+        <Button type="submit" disabled={!isFormValid}>
           {buttonLabel}
         </Button>
       </ButtonContainer>
