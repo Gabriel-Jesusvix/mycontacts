@@ -1,13 +1,21 @@
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable max-len */
+/* eslint-disable no-nested-ternary */
 import {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 import { Link } from 'react-router-dom';
+
 import arrow from '../../assets/image/icons/arrow.svg';
 import edit from '../../assets/image/icons/edit.svg';
 import trash from '../../assets/image/icons/trash.svg';
+import sad from '../../assets/image/icons/sad.svg';
+import emptyBox from '../../assets/image/icons/empty-box.svg';
+import searchContact from '../../assets/image/icons/search.svg';
+
 import formatPhone from '../../utils/formatPhone';
 import { Loader } from '../../components/Loader';
-import sad from '../../assets/image/icons/sad.svg';
+
 import {
   Card,
   Container,
@@ -15,6 +23,8 @@ import {
   Header,
   ListHeader,
   ErrorContainer,
+  EmptyListContainer,
+  SearchNotFoundContainer,
 } from './styles';
 import ContactsService from '../../services/ContactsService';
 import { Button } from '../../components/Button';
@@ -37,6 +47,7 @@ export function Home() {
     try {
       setIsLoading(true);
       const contactsList = await ContactsService.listContacts(orderBy);
+      await ContactsService.listContacts(orderBy);
 
       setHasError(false);
       setContacts(contactsList);
@@ -66,17 +77,27 @@ export function Home() {
   return (
     <Container>
       <Loader isLoading={isLoading} />
-      <InputSearchContainer>
-        <input
-          type="text"
-          placeholder="Pesquisar contato"
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-        />
-      </InputSearchContainer>
-      <Header hasError={hasError}>
+
+      {
+        contacts.length > 0 && (
+          <InputSearchContainer>
+            <input
+              type="text"
+              placeholder="Pesquisar contato"
+              value={searchTerm}
+              onChange={handleChangeSearchTerm}
+            />
+          </InputSearchContainer>
+        )
+      }
+      <Header justifyContent={
+        hasError ? 'flex-end' : (
+          contacts.length > 0 ? 'space-between' : 'center'
+        )
+}
+      >
         {
-          !hasError && (
+          (!hasError && contacts.length > 0) && (
             <strong>
               {filteredContacts.length}
               {' '}
@@ -105,6 +126,27 @@ export function Home() {
       {
         !hasError && (
           <>
+
+            {(contacts.length < 1 && !isLoading) && (
+              <EmptyListContainer>
+                <img src={emptyBox} alt="Sem contatos" />
+                <p>
+                  Você ainda não tem nenhum contato cadastrado!
+                  Clique no botão  <strong> ”Novo contato”</strong> à cima para cadastrar o seu primeiro!
+                </p>
+              </EmptyListContainer>
+            )}
+
+            {
+              (contacts.length > 0 && filteredContacts.length < 1)
+              && (
+                <SearchNotFoundContainer>
+                  <img src={searchContact} alt="Search contato imagem" />
+                  <span>Nenhum resultado foi encontrado para <strong>{searchTerm}.</strong></span>
+                </SearchNotFoundContainer>
+              )
+            }
+
             {
             filteredContacts.length > 0 && (
               <ListHeader orderBy={orderBy}>
