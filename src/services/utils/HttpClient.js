@@ -7,7 +7,7 @@ class HttpClient {
   }
 
   async get(path) {
-    await delay(500);
+    await delay(1500); // remover na produção
 
     const response = await fetch(`${this.baseUrl}${path}`);
 

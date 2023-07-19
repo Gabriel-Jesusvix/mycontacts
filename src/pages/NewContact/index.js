@@ -2,6 +2,8 @@ import { ContactForm } from '../../components/ContactForm';
 import { PageHeader } from '../../components/PageHeader';
 
 export function NewContact() {
+  function handleSubmit() {}
+
   return (
     <div>
       <PageHeader
@@ -9,6 +11,7 @@ export function NewContact() {
       />
       <ContactForm
         buttonLabel="Cadastrar"
+        onSubmit={handleSubmit}
       />
     </div>
   );
