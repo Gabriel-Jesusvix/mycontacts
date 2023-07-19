@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 export const Container = styled.div`
   margin-top: 32px;
@@ -26,8 +26,13 @@ export const InputSearchContainer = styled.div`
 export const Header = styled.header`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ hasError }) => (hasError ? 'flex-end' : 'space-between')};
   margin-top: 32px;
+  padding-bottom: 16px;
+  ${({ hasError, theme }) => hasError && css`
+      border-bottom: 2px solid ${theme.colors.gray[100]};
+
+  `}
 
   strong {
     font-size: 24px;
@@ -116,4 +121,20 @@ export const Card = styled.div`
       margin-left: 8px;
     }
   }
+`;
+
+export const ErrorContainer = styled.div`
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  strong {
+    font-size: 22px;
+    color: ${({ theme }) => theme.colors.danger.main};
+    display: block;
+    margin-bottom: 8px;
+  }
+
+
 `;
