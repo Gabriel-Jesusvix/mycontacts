@@ -7,4 +7,5 @@
 
 ## 💻 Projeto
 
-Application with emphasis on creating a contact network, you can register contacts and categorize these contacts.
+Application with emphasis on creating a contact network, you can register contacts and categorize these contacts. </br>
+
