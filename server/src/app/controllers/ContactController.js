@@ -27,13 +27,15 @@ class ContactController {
       name, email, phone, category_id,
     } = request.body;
 
-    if(category_id && isValidUUIID(category_id)) {
-      return response.status(400).json({error: 'Invalid category id'});
-    }
 
     if (!name) {
       return response.status(400).json({ error: 'Name is required' });
     }
+
+    if(category_id && !isValidUUIID(category_id)) {
+      return response.status(400).json({error: 'Invalid category id'});
+    }
+
     if(email) {
       const contactByEmail = await ContactRepository.findByEmail(email);
       if (contactByEmail && contactByEmail.id !== id) {
@@ -84,7 +86,7 @@ class ContactController {
       name,
       email: email || null,
       phone,
-      category_id:category_id || null,
+      category_id: category_id || null,
     });
 
     response.json(contact);
