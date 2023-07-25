@@ -11,6 +11,7 @@ export function EditContact() {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const contactFormRef = useRef(null);
+  const [contactName, setContactName] = useState('');
 
   useEffect(() => {
     async function loadContact() {
@@ -18,6 +19,7 @@ export function EditContact() {
         const contactData = await ContactsService.getContactById(id);
         contactFormRef.current.setFiledsValues(contactData);
         setIsLoading(false);
+        setContactName(contactData.name);
       } catch (error) {
         history.push('/');
         toast({
@@ -30,13 +32,31 @@ export function EditContact() {
     loadContact();
   }, [id, history]);
 
-  function handleSubmit() {
-    //
+  async function handleSubmit(formData) {
+    try {
+      const contact = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        category_id: formData.categoryId,
+      };
+      const { name } = await ContactsService.updateContact(id, contact);
+      setContactName(name);
+      toast({
+        type: 'success',
+        text: 'Contato editado com sucesso!',
+      });
+    } catch {
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao editar o contato!',
+      });
+    }
   }
   return (
     <>
       <Loader isLoading={isLoading} />
-      <PageHeader title="Editar Contato" />
+      <PageHeader title={isLoading ? 'Carregando...' : `Editar Contato ${contactName}`} />
 
       <ContactForm
         ref={contactFormRef}

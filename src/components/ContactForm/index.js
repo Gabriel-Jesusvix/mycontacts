@@ -27,23 +27,19 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const isFormValid = (name && errors.length === 0);
   useImperativeHandle(ref, () => ({
     setFiledsValues: (contact) => {
-      setName(contact.name);
-      setEmail(contact.email);
-      setPhone(contact.phone);
-      setCategories(contact.categoryid);
+      setName(contact.name || '');
+      setEmail(contact.email || '');
+      setPhone(formatPhone(contact.phone) || '');
+      setCategories(contact.category_id || '');
+    },
+    resetFileds: () => {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setCategories('');
     },
   }));
-  // useEffect(() => {
-  //   const refObject = ref;
-  //   refObject.current = {
-  //     setFiledsValues: (contact) => {
-  //       setName(contact.name);
-  //       setEmail(contact.email);
-  //       setPhone(contact.phone);
-  //       setCategories(contact.category_id);
-  //     },
-  //   };
-  // }, [ref]);
+
   useEffect(() => {
     async function LoadCategories() {
       try {
@@ -88,10 +84,6 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
     });
 
     setIsSubmitting(false);
-    setName('');
-    setEmail('');
-    setPhone('');
-    setCategoryId('');
   }
 
   return (
@@ -132,9 +124,12 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
           disabled={isLoadingCategories || isSubmitting}
         >
           <option value="">Categoria</option>
-          {categories?.map((category) => (
+
+          {categories ? categories?.map((category) => (
             <option key={category.id} value={category.id}>{category.name}</option>
-          ))}
+          )) : (
+            <option key="" value="sem categoria">Sem categoria</option>
+          )}
         </Select>
       </FormGroup>
       <ButtonContainer>
