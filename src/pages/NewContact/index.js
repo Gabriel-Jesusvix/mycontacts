@@ -15,7 +15,7 @@ export function NewContact() {
       await ContactsService.createContact(contact);
       toast({
         type: 'success',
-        text: 'Contato cadastrado com sucesso',
+        text: 'Contato cadastrado com sucesso!',
       });
     } catch {
       toast({
