@@ -9,12 +9,12 @@ class ContactsService {
     return this.httpClient.get(`/contacts?orderBy=${orderBy}`);
   }
 
-  createContact(contact) {
-    return this.httpClient.post('/contacts', { body: contact });
-  }
-
   getContactById(id) {
     return this.httpClient.get(`/contacts/${id}`);
+  }
+
+  createContact(contact) {
+    return this.httpClient.post('/contacts', { body: contact });
   }
 }
 export default new ContactsService();
