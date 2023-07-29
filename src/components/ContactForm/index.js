@@ -41,16 +41,25 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   }));
 
   useEffect(() => {
+    let isMounted = true;
     async function LoadCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
-        setCategories(categoriesList);
+        if (isMounted) {
+          setCategories(categoriesList);
+        }
       } catch {} finally {
-        setIsLoadingCategories(false);
+        if (isMounted) {
+          setIsLoadingCategories(false);
+        }
       }
     }
 
     LoadCategories();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   function handleNameChange(event) {
