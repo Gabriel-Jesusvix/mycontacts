@@ -10,7 +10,7 @@ class ContactController {
 
   async show(request, response) {
     const { id } = request.params;
-    if(isValidUUIID(id)) {
+    if(!isValidUUIID(id)) {
       return response.status(400).json({error: 'Invalid contact id'});
     }
     const contact = await ContactRepository.findById(id);
@@ -56,7 +56,7 @@ class ContactController {
       name, email, phone, category_id,
     } = request.body;
 
-    if(isValidUUIID(id)) {
+    if(!isValidUUIID(id)) {
       return response.status(400).json({error: 'Invalid contact id'});
     }
 
@@ -94,7 +94,7 @@ class ContactController {
 
   async delete(request, response) {
     const { id } = request.params;
-    if(isValidUUIID(id)) {
+    if(!isValidUUIID(id)) {
       return response.status(400).json({error: 'Invalid contact id'});
     }
     await ContactRepository.delete(id);
