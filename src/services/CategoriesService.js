@@ -1,5 +1,5 @@
 import HttpClient from './utils/HttpClient';
-import CategoryMapper from './mappers/CaegoryMapper';
+import CategoryMapper from './mappers/CategoryMapper';
 
 class CategoriesService {
   constructor() {
