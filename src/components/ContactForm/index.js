@@ -24,6 +24,7 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const {
     setError, removeError, getErrorMessageByFiledName, errors,
   } = useErrors();
+  // console.log(typeof categories);
   const isFormValid = (name && errors.length === 0);
   useImperativeHandle(ref, () => ({
     setFiledsValues: (contact) => {
@@ -44,7 +45,6 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
     async function LoadCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
-        console.log(categoriesList);
         setCategories(categoriesList);
       } catch {
       } finally {
