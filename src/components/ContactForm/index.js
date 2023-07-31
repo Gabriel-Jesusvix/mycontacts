@@ -30,7 +30,7 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       setName(contact.name || '');
       setEmail(contact.email || '');
       setPhone(formatPhone(contact.phone) || '');
-      setCategories(contact.category_id || '');
+      setCategories(contact.category.id || '');
     },
     resetFileds: () => {
       setName('');
@@ -41,25 +41,18 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   }));
 
   useEffect(() => {
-    let isMounted = true;
     async function LoadCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
-        if (isMounted) {
-          setCategories(categoriesList);
-        }
-      } catch {} finally {
-        if (isMounted) {
-          setIsLoadingCategories(false);
-        }
+        console.log(categoriesList);
+        setCategories(categoriesList);
+      } catch {
+      } finally {
+        setIsLoadingCategories(false);
       }
     }
 
     LoadCategories();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   function handleNameChange(event) {
@@ -134,11 +127,14 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
         >
           <option value="">Categoria</option>
 
-          {categories ? categories?.map((category) => (
-            <option key={category.id} value={category.id}>{category.name}</option>
-          )) : (
-            <option key="" value="sem categoria">Sem categoria</option>
-          )}
+          {
+            categories.length > 0
+            && categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))
+}
         </Select>
       </FormGroup>
       <ButtonContainer>
