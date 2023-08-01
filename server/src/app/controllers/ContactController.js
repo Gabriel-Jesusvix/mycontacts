@@ -60,7 +60,7 @@ class ContactController {
       return response.status(400).json({error: 'Invalid contact id'});
     }
 
-    if(category_id && isValidUUIID(category_id)) {
+    if(category_id && !isValidUUIID(category_id)) {
       return response.status(400).json({error: 'Invalid category id'});
     }
 

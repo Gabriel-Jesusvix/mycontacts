@@ -12,19 +12,12 @@ class CategoriesRepository {
 
   async findById(id) {
     const [row] = await db.query(`
-    SELECT * FROM contacts WHERE id = $1
+    SELECT * FROM categories WHERE id = $1
   `, [id]);
 
     return row;
   }
 
-  async findByEmail(email) {
-    const [row] = await db.query(`
-    SELECT * FROM contacts WHERE email = $1
-  `, [email]);
-
-    return row;
-  }
 
   async create({
     name,
@@ -45,7 +38,7 @@ class CategoriesRepository {
     name, email, phone, category_id,
   }) {
     const [row] = await db.query(`
-      UPDATE contacts 
+      UPDATE categories
       SET name = $1, email = $2, phone = $3, category_id = $4
       WHERE id = $5
       RETURNING *
@@ -55,8 +48,8 @@ class CategoriesRepository {
   }
 
   async delete(id) {
-    const deleteOp = await db.query(`
-      DELETE FROM contacts WHERE id = $1
+    const [deleteOp] = await db.query(`
+      DELETE FROM categories WHERE id = $1
     `, [id]);
     return deleteOp;
   }
