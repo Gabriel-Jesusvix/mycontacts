@@ -51,12 +51,12 @@ export function Home() {
     try {
       setIsLoading(true);
       const contactsList = await ContactsService.listContacts(orderBy);
-      await ContactsService.listContacts(orderBy);
 
       setHasError(false);
       setContacts(contactsList);
     } catch {
       setHasError(true);
+      setContacts([]);
     } finally {
       setIsLoading(false);
     }

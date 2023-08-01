@@ -12,26 +12,27 @@ import { Input } from '../Input';
 import { Select } from '../Select';
 import { Button } from '../Button';
 import CategoriesService from '../../services/CategoriesService';
+import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
 
 export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [categoryId, setCategoryId] = useState('');
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useSafeAsyncState([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     setError, removeError, getErrorMessageByFiledName, errors,
   } = useErrors();
-  // console.log(typeof categories);
   const isFormValid = (name && errors.length === 0);
+
   useImperativeHandle(ref, () => ({
     setFiledsValues: (contact) => {
       setName(contact.name || '');
       setEmail(contact.email || '');
       setPhone(formatPhone(contact.phone) || '');
-      setCategories(contact.category.id || '');
+      setCategoryId(contact.category.id || '');
     },
     resetFileds: () => {
       setName('');
@@ -42,7 +43,7 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   }));
 
   useEffect(() => {
-    async function LoadCategories() {
+    async function loadCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
         setCategories(categoriesList);
@@ -52,8 +53,8 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       }
     }
 
-    LoadCategories();
-  }, []);
+    loadCategories();
+  }, [setCategories]);
 
   function handleNameChange(event) {
     setName(event.target.value);
@@ -128,13 +129,13 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
           <option value="">Categoria</option>
 
           {
-            categories.length > 0
-            && categories.map((category) => (
+            categories ? categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))
-}
+              : null
+          }
         </Select>
       </FormGroup>
       <ButtonContainer>
