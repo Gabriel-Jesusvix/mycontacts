@@ -28,7 +28,7 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const isFormValid = (name && errors.length === 0);
 
   useImperativeHandle(ref, () => ({
-    setFiledsValues: (contact) => {
+    setFieldsValues: (contact) => {
       setName(contact.name || '');
       setEmail(contact.email || '');
       setPhone(formatPhone(contact.phone) || '');

@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable max-len */
 /* eslint-disable no-nested-ternary */
-import {
-  useEffect, useState, useMemo, useCallback,
-} from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import arrow from '../../assets/image/icons/arrow.svg';
@@ -12,7 +10,6 @@ import trash from '../../assets/image/icons/trash.svg';
 import sad from '../../assets/image/icons/sad.svg';
 import emptyBox from '../../assets/image/icons/empty-box.svg';
 import searchContact from '../../assets/image/icons/search.svg';
-import { toast } from '../../utils/toast';
 import formatPhone from '../../utils/formatPhone';
 import { Loader } from '../../components/Loader';
 
@@ -26,90 +23,28 @@ import {
   EmptyListContainer,
   SearchNotFoundContainer,
 } from './styles';
-import ContactsService from '../../services/ContactsService';
 import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
+import useHome from './useHome';
 
 export function Home() {
-  const [contacts, setContacts] = useState([]);
-  const [orderBy, setOrderBy] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [contactBeignDeleted, setContactBeignDeleted] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-    /*
-     * contact.name.startsWith(searchTerm.toLowerCase()) Nesse caso,
-       para busca bater somente com o inicio da busca do usuario no campo;
-    */
-  )), [contacts, searchTerm]);
-
-  const loadContacts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const contactsList = await ContactsService.listContacts(orderBy);
-
-      setHasError(false);
-      setContacts(contactsList);
-    } catch {
-      setHasError(true);
-      setContacts([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [orderBy]);
-
-  useEffect(() => {
-    loadContacts();
-  }, [loadContacts]);
-
-  function handleToogleOrderBy() {
-    setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'));
-  }
-
-  function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
-  }
-
-  async function handleTryAgain() {
-    loadContacts();
-  }
-
-  function handleDeleteContact(contact) {
-    setContactBeignDeleted(contact);
-    setDeleteModalVisible(true);
-  }
-  function handleCloseDeleteModal() {
-    setDeleteModalVisible(false);
-    setContactBeignDeleted(null);
-  }
-  async function handleConfirmDeleteContact() {
-    try {
-      setIsLoadingDelete(true);
-      await ContactsService.deleteContact(contactBeignDeleted.id);
-
-      handleCloseDeleteModal();
-      setContacts((prevState) => prevState.filter((contact) => (
-        contact.id !== contactBeignDeleted.id
-      )));
-
-      toast({
-        type: 'success',
-        text: 'Contato deletado com sucesso!',
-      });
-    } catch (error) {
-      toast({
-        type: 'danger',
-        text: 'Ocorreu um erro ao deletar um contato',
-      });
-    } finally {
-      setIsLoadingDelete(false);
-    }
-  }
-
+  const {
+    isLoading,
+    contactBeignDeleted,
+    handleCloseDeleteModal,
+    handleConfirmDeleteContact,
+    isDeleteModalVisible,
+    isLoadingDelete,
+    contacts,
+    searchTerm,
+    hasError,
+    filteredContacts,
+    handleTryAgain,
+    handleChangeSearchTerm,
+    orderBy,
+    handleToogleOrderBy,
+    handleDeleteContact,
+  } = useHome();
   return (
     <Container>
       <Loader isLoading={isLoading} />

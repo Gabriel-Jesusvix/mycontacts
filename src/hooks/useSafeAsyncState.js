@@ -1,7 +1,7 @@
 import {
   useCallback, useState,
 } from 'react';
-import { useIsMounted } from './useIsMounted';
+import useIsMounted from './useIsMounted';
 
 export function useSafeAsyncState(initialState) {
   const [state, setState] = useState(initialState);
