@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export default function useErrors() {
   const [errors, setErrors] = useState([]);
 
-  function setError({ filed, message }) {
+  const setError = useCallback(({ filed, message }) => {
     const errorAlreadyExists = errors.find((error) => error.filed === filed);
 
     if (errorAlreadyExists) {
@@ -14,15 +14,15 @@ export default function useErrors() {
       ...prevState,
       { filed, message },
     ]);
-  }
+  }, [errors]);
 
-  function removeError(filedName) {
+  const removeError = useCallback((filedName) => {
     setErrors((prevState) => prevState.filter((error) => error.filed !== filedName));
-  }
+  }, []);
 
-  function getErrorMessageByFiledName(filedName) {
-    return errors.find((error) => error.filed === filedName)?.message;
-  }
+  const getErrorMessageByFiledName = useCallback((fildName) => (
+    errors.find((error) => error.field === fildName)?.message
+  ), [errors]);
 
   return {
     errors,

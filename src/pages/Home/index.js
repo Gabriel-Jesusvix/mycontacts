@@ -49,17 +49,6 @@ export function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-      <Modal
-        danger
-        title={`Tem certeza que deseja remover o contato '${contactBeignDeleted?.name}'?`}
-        confirmLabel="Deletar"
-        onCancel={handleCloseDeleteModal}
-        onConfirm={handleConfirmDeleteContact}
-        visible={isDeleteModalVisible}
-        isLoading={isLoadingDelete}
-      >
-        <p>Esta ação não poderá ser desfeita!</p>
-      </Modal>
       {
         contacts.length > 0 && (
           <InputSearchContainer>
@@ -167,6 +156,17 @@ export function Home() {
               </Card>
             ))
           }
+            <Modal
+              danger
+              title={`Tem certeza que deseja remover o contato '${contactBeignDeleted?.name}'?`}
+              confirmLabel="Deletar"
+              onCancel={handleCloseDeleteModal}
+              onConfirm={handleConfirmDeleteContact}
+              visible={isDeleteModalVisible}
+              isLoading={isLoadingDelete}
+            >
+              <p>Esta ação não poderá ser desfeita!</p>
+            </Modal>
           </>
         )
       }
