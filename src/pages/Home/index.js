@@ -29,9 +29,11 @@ export function Home() {
     handleToogleOrderBy,
     handleDeleteContact,
   } = useHome();
+
   const hasContacts = contacts.length > 0;
   const isListEmpty = !hasError && (!isLoading && !hasContacts);
   const isSearchEmpty = !hasError && (!hasContacts && filteredContacts.length < 1);
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
