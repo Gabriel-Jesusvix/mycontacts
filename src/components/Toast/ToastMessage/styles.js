@@ -28,6 +28,20 @@ const messageIn = keyframes`
   }
 
 `;
+const messageOut = keyframes`
+  from{
+    opacity:1;
+    transform: translateY(0px);
+
+  }
+
+  to {
+    opacity:0;
+    // Valor positivo elemento desce, negativo sobe;
+    transform: translateY(100px);
+  }
+
+`;
 export const Container = styled.div`
   padding: 16px 32px;
   background: ${({ theme }) => theme.colors.primary.main};
@@ -39,6 +53,10 @@ export const Container = styled.div`
   justify-content: center;
   cursor: pointer;
   animation: ${messageIn} 0.3s;
+
+  ${({ isLeaving }) => isLeaving && css`
+    animation: ${messageOut} 0.2s;
+  `}
   &:focus {
     background: containerVariants[type];
   }
