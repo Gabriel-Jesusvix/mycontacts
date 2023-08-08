@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const containerVariants = {
   default: css`
@@ -15,6 +15,19 @@ const containerVariants = {
   `,
 };
 
+const messageIn = keyframes`
+  from{
+    opacity:0;
+    // Valor positivo elemento desce, negativo sobe;
+    transform: translateY(100px);
+  }
+
+  to {
+    opacity:1;
+    transform: translateY(0px);
+  }
+
+`;
 export const Container = styled.div`
   padding: 16px 32px;
   background: ${({ theme }) => theme.colors.primary.main};
@@ -25,7 +38,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
+  animation: ${messageIn} 0.3s;
   &:focus {
     background: containerVariants[type];
   }
