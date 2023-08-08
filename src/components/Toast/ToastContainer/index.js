@@ -1,47 +1,43 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ToastMessage } from '../ToastMessage';
+import { useEffect } from 'react';
+import ToastMessage from '../ToastMessage';
 import { Container } from './styles';
 import { toastEventManager } from '../../../utils/toast';
+import useAnimatedList from '../../../hooks/useAnimatedList';
 
-export function ToastCotainer() {
-  const [messages, setMessages] = useState([]);
-  const [pendingRemovalMessagesId, setPendingRemovalMessagesId] = useState([]);
+export function ToastContainer() {
+  const {
+    setItems: setMessages,
+    handleRemoveItem,
+    renderList,
+  } = useAnimatedList();
+
   useEffect(() => {
     function handleAddToast({ type, text, duration }) {
       setMessages((prevState) => [
         ...prevState,
-        { id: Math.random(), type, text },
+        {
+          id: Math.random(), type, text, duration,
+        },
       ]);
     }
     toastEventManager.on('addtoast', handleAddToast);
 
     return () => {
-      toastEventManager.removeListener('addtoast', handleAddToast);
+      toastEventManager.removeListener('addtoast');
     };
-  }, []);
-
-  const handleRemoveMessage = useCallback((id) => {
-    setPendingRemovalMessagesId((prevState) => [...prevState, id]);
-  }, []);
-
-  const handleAnimationEnd = useCallback((id) => {
-    setMessages((prevState) => prevState.filter((message) => message.id !== id));
-    setPendingRemovalMessagesId((prevState) => prevState.filter((messageId) => messageId !== id));
-  }, []);
+  }, [setMessages]);
 
   return (
     <Container>
-      {
-        messages.map((message) => (
-          <ToastMessage
-            key={message.id}
-            message={message}
-            onRemoveMessage={handleRemoveMessage}
-            isLeaving={pendingRemovalMessagesId.includes(message.id)}
-            onAnimationEnd={handleAnimationEnd}
-          />
-        ))
-      }
+      {renderList((message, { isLeaving, animatedRef }) => (
+        <ToastMessage
+          key={message.id}
+          message={message}
+          onRemoveMessage={handleRemoveItem}
+          isLeaving={isLeaving}
+          animatedRef={animatedRef}
+        />
+      ))}
     </Container>
   );
 }

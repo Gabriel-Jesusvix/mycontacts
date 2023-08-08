@@ -1,69 +1,51 @@
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useEffect, memo } from 'react';
 import { Container } from './styles';
+
 import xCircleIcon from '../../../assets/image/icons/xcircle.svg';
 import checkCircleIcon from '../../../assets/image/icons/checkcircle.svg';
 
-export function ToastMessage({
-  message, onRemoveMessage, isLeaving, onAnimationEnd,
+function ToastMessage({
+  message, onRemoveMessage, isLeaving, animatedRef,
 }) {
-  const animatedElementRef = useRef(null);
-
-  useEffect(() => {
-    function hadleAnimationEnd() {
-      onAnimationEnd(message.id);
-    }
-
-    const elementRef = animatedElementRef.current;
-    if (isLeaving) {
-      elementRef.addEventListener('animationend', hadleAnimationEnd);
-    }
-
-    return () => {
-      elementRef.removeEventListener('animationend', hadleAnimationEnd);
-    };
-  }, [isLeaving, message.id, onAnimationEnd]);
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onRemoveMessage(message.id);
-    }, message.duration || 4000);
-
+    }, message.duration || 7000);
     return () => {
       clearTimeout(timeoutId);
     };
   }, [message, onRemoveMessage]);
 
-  function handleRemoveTost() {
+  function handleRemoveToast() {
     onRemoveMessage(message.id);
   }
-
   return (
     <Container
       type={message.type}
-      onClick={handleRemoveTost}
+      onClick={handleRemoveToast}
       tabIndex={0}
       role="button"
       isLeaving={isLeaving}
-      ref={animatedElementRef}
+      ref={animatedRef}
     >
-      {message.type === 'danger' && <img src={xCircleIcon} alt=" toast Error" />}
-      {message.type === 'success' && <img src={checkCircleIcon} alt=" toast sucesso" />}
-      <strong>
-        {message.text}
-      </strong>
+      {message.type === 'danger' && <img src={xCircleIcon} alt="X" />}
+      {message.type === 'success' && <img src={checkCircleIcon} alt="Check" />}
+      <strong>{message.text}</strong>
     </Container>
   );
 }
 
 ToastMessage.propTypes = {
   message: PropTypes.shape({
-    id: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     type: PropTypes.oneOf(['default', 'success', 'danger']),
     duration: PropTypes.number,
   }).isRequired,
   onRemoveMessage: PropTypes.func.isRequired,
-  onAnimationEnd: PropTypes.func.isRequired,
+  animatedRef: PropTypes.shape().isRequired,
   isLeaving: PropTypes.bool.isRequired,
 };
+
+export default memo(ToastMessage);

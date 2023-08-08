@@ -10,7 +10,6 @@ export default function useAnimatedList(initialValue = []) {
   const animationEndListeners = useRef(new Map());
 
   const handleAnimationEnd = useCallback((itemId) => {
-    console.log('TO AQUI');
     const removeListener = animationEndListeners.current.get(itemId);
     removeListener();
 
@@ -18,10 +17,8 @@ export default function useAnimatedList(initialValue = []) {
     animatedRefs.current.delete(itemId);
 
     setItems((prevState) => prevState.filter((item) => item.id !== itemId));
-    setPendingRemovalItemsIds((prevState) => prevState.filter((id) => id !== itemId));
-
-    console.log({ items });
-  }, [items]);
+    setPendingRemovalItemsIds((prevState) => prevState.filter((id) => itemId !== id));
+  }, []);
 
   useEffect(() => {
     pendingRemovalItemsIds.forEach((itemId) => {
@@ -32,7 +29,7 @@ export default function useAnimatedList(initialValue = []) {
       if (animatedElement && !alreadyHasListener) {
         const onAnimationEnd = () => handleAnimationEnd(itemId);
         const removeListener = () => {
-          animatedElement.removeListener('animationend', onAnimationEnd);
+          animatedElement.removeEventListener('animationend', onAnimationEnd);
         };
         animatedElement.addEventListener('animationend', onAnimationEnd);
         animationEndListeners.current.set(itemId, removeListener);
