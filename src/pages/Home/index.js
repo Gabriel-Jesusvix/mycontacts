@@ -8,11 +8,12 @@ import { Header } from './components/Header';
 import { ErrorStatus } from './components/ErrorStatus';
 import { EmptyList } from './components/EmptyList';
 import { SearchNotFound } from './components/SearchNotFound';
-import { ContactList } from './components/ContactsList';
+import ContactList from './components/ContactsList';
 import { Modal } from '../../components/Modal';
 
 export function Home() {
   const {
+    isPending,
     isLoading,
     contactBeignDeleted,
     handleCloseDeleteModal,
@@ -30,19 +31,19 @@ export function Home() {
     handleDeleteContact,
   } = useHome();
 
-  const hasContacts = contacts.length > 0;
-  const isListEmpty = !hasError && (!isLoading && !hasContacts);
-  const isSearchEmpty = !hasError && (!hasContacts && filteredContacts.length < 1);
+  const hasContacts = contacts.length;
+  const isListEmpty = !hasError && !isLoading && !hasContacts;
+  const isSearchEmpty = !hasError && hasContacts && filteredContacts.length < 1;
 
   return (
     <Container>
       <Loader isLoading={isLoading} />
       {
         hasContacts && (
-        <InputSearch
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-        />
+          <InputSearch
+            value={searchTerm}
+            onChange={handleChangeSearchTerm}
+          />
         )
       }
       <Header
@@ -50,34 +51,34 @@ export function Home() {
         qtyOfcontacts={contacts.length}
         qtyOffilteredContacts={filteredContacts.length}
       />
-      {hasError && (<ErrorStatus onTryAgain={handleTryAgain} />)}
+      {hasError && <ErrorStatus onTryAgain={handleTryAgain} />}
 
-      {(isListEmpty) && <EmptyList /> }
+      {isListEmpty && <EmptyList />}
 
-      {(isSearchEmpty) && <SearchNotFound searchTerm={searchTerm} />}
+      {isSearchEmpty && <SearchNotFound searchTerm={searchTerm} />}
 
       {hasContacts && (
-      <>
+        <>
 
-        <ContactList
-          filteredContacts={filteredContacts}
-          orderBy={orderBy}
-          onToogleOrderBy={handleToogleOrderBy}
-          onDeleteContact={handleDeleteContact}
-        />
+          <ContactList
+            filteredContacts={filteredContacts}
+            orderBy={orderBy}
+            onToogleOrderBy={handleToogleOrderBy}
+            onDeleteContact={handleDeleteContact}
+          />
 
-        <Modal
-          danger
-          title={`Tem certeza que deseja remover o contato '${contactBeignDeleted?.name}'?`}
-          confirmLabel="Deletar"
-          onCancel={handleCloseDeleteModal}
-          onConfirm={handleConfirmDeleteContact}
-          visible={isDeleteModalVisible}
-          isLoading={isLoadingDelete}
-        >
-          <p>Esta ação não poderá ser desfeita!</p>
-        </Modal>
-      </>
+          <Modal
+            danger
+            title={`Tem certeza que deseja remover o contato '${contactBeignDeleted?.name}'?`}
+            confirmLabel="Deletar"
+            onCancel={handleCloseDeleteModal}
+            onConfirm={handleConfirmDeleteContact}
+            visible={isDeleteModalVisible}
+            isLoading={isLoadingDelete}
+          >
+            <p>Esta ação não poderá ser desfeita!</p>
+          </Modal>
+        </>
       )}
     </Container>
   );

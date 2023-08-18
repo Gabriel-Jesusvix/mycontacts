@@ -1,5 +1,5 @@
 import {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useCallback, useTransition,
 } from 'react';
 import { toast } from '../../utils/toast';
 import ContactsService from '../../services/ContactsService';
@@ -13,22 +13,29 @@ export default function useHome() {
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [contactBeignDeleted, setContactBeignDeleted] = useState(null);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-    /*
-     * contact.name.startsWith(searchTerm.toLowerCase()) Nesse caso,
-       para busca bater somente com o inicio da busca do usuario no campo;
-    */
-  )), [contacts, searchTerm]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [isPending, startTransition] = useTransition();
 
-  const loadContacts = useCallback(async () => {
+  // const filteredContacts = useMemo(() => contacts.filter((contact) => (
+  //   contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  //   /*
+  //    * contact.name.startsWith(searchTerm.toLowerCase()) Nesse caso,
+  //      para busca bater somente com o inicio da busca do usuario no campo;
+  //   */
+  // )), [contacts, searchTerm]);
+
+  const loadContacts = useCallback(async (signal) => {
     try {
       setIsLoading(true);
-      const contactsList = await ContactsService.listContacts(orderBy);
+      const contactsList = await ContactsService.listContacts(orderBy, signal);
 
       setHasError(false);
       setContacts(contactsList);
-    } catch {
+      setFilteredContacts(contactsList);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
       setHasError(true);
       setContacts([]);
     } finally {
@@ -37,25 +44,37 @@ export default function useHome() {
   }, [orderBy]);
 
   useEffect(() => {
-    loadContacts();
+    const controller = new AbortController();
+
+    loadContacts(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [loadContacts]);
 
   function handleToogleOrderBy() {
     setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'));
   }
 
-  function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
-  }
+  const handleChangeSearchTerm = useCallback((event) => {
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    startTransition(() => {
+      setFilteredContacts(contacts.filter((contact) => (contact.name.toLowerCase()
+        .includes(value.toLowerCase()))));
+    });
+  }, [contacts]);
 
   async function handleTryAgain() {
     loadContacts();
   }
 
-  function handleDeleteContact(contact) {
+  const handleDeleteContact = useCallback((contact) => {
     setContactBeignDeleted(contact);
     setDeleteModalVisible(true);
-  }
+  }, []);
   function handleCloseDeleteModal() {
     setDeleteModalVisible(false);
   }
@@ -84,6 +103,7 @@ export default function useHome() {
   }
 
   return {
+    isPending,
     isLoading,
     contactBeignDeleted,
     handleCloseDeleteModal,
