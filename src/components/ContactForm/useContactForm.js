@@ -25,10 +25,10 @@ export default function useContactForm(onSubmit, ref) {
   // ?? nullish coalescing operator
   useImperativeHandle(ref, () => ({
     setFieldsValues: (contact) => {
-      setName(contact.name ?? '');
-      setEmail(contact.email ?? '');
-      setPhone(contact.phone ?? '');
-      setCategoryId(contact.category.id ?? '');
+      setName(contact.name || '');
+      setEmail(formatPhone(contact.email) || '');
+      setPhone(contact.phone || '');
+      setCategoryId(contact.category.id || '');
     },
     resetFields: () => {
       setName('');

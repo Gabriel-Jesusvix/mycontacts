@@ -8,13 +8,13 @@ export default function useNewContact() {
     try {
       await ContactsService.createContact(contact);
 
-      contactFormRef.current.resetFileds();
+      contactFormRef.current.resetFields();
 
       toast({
         type: 'success',
         text: 'Contato cadastrado com sucesso!',
       });
-    } catch {
+    } catch (error) {
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao cadastrar o contato!',
