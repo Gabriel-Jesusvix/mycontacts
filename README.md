@@ -5,7 +5,55 @@
 <h1 align="center"> MyContacts Project 💻 </h1>
 
 
-## 💻 Projeto
+# 💻 MyContacts
+Application with emphasis on creating a contact network, you can register contacts and categorize these contacts.
 
-Application with emphasis on creating a contact network, you can register contacts and categorize these contacts. </br>
+- the application is raw, with the objective of training relevant concepts in a process of creating a web system.
+
+## Learnings
+
+- Create form and validation manually;
+- Theme configuration with StyledComponents;
+- React Portals;
+- Custom hooks for httpclient, errors, others;
+- Colors;
+- Service layer;
+- Optimization of SVG;
+- Creation of Listeners events
+- Data Mappers
+- Implementation of Container/Presentational
+- Animations and Keyframes
+- Update React 18 and React Router V6
+
+## Functionalities
+
+- List contacts
+- List details contact
+- Create new contact
+- Delete contact;
+
+
+## Stack utilizada
+
+**Front-end:** React CRA, StyledComponents, React Router Dom.
+
+**Back-end:** Node, Express , Docker.
+
+
+## Instalação
+
+Install mycontacts with npm or yarn;
+
+```bash
+  git clone project;
+  yarn or npm to install dependecies;
+  cd folder mycontacts;
+  yarn start;
+```
+    
+## Screenshots
+
+![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+
 
