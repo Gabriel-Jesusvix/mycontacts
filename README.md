@@ -24,6 +24,7 @@ Application with emphasis on creating a contact network, you can register contac
 - Implementation of Container/Presentational
 - Animations and Keyframes
 - Update React 18 and React Router V6
+- Instructions SQL in Back-end
 
 ## Functionalities
 
