@@ -3,20 +3,17 @@ import {
   forwardRef,
 } from 'react';
 
-import formatPhone from '../../utils/formatPhone';
-import useErrors from '../../hooks/useErrors';
+import { Button } from '../Button';
 import { FormGroup } from '../FormGroup';
-import { Form, ButtonContainer } from './styles';
 import { Input } from '../Input';
 import { Select } from '../Select';
-import { Button } from '../Button';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { ButtonContainer, Form } from './styles';
 import useContactForm from './useContactForm';
 
 export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const {
     handleSubmit,
-    getErrorMessageByFiledName,
+    getErrorMessageByFieldName,
     name,
     handleNameChange,
     isSubmitting,
@@ -33,18 +30,18 @@ export const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
 
   return (
     <Form onSubmit={handleSubmit} noValidate>
-      <FormGroup error={getErrorMessageByFiledName('name')}>
+      <FormGroup error={getErrorMessageByFieldName('name')}>
         <Input
-          error={getErrorMessageByFiledName('name')}
+          error={getErrorMessageByFieldName('name')}
           placeholder="Nome *"
           value={name}
           onChange={handleNameChange}
           disabled={isSubmitting}
         />
       </FormGroup>
-      <FormGroup error={getErrorMessageByFiledName('email')}>
+      <FormGroup error={getErrorMessageByFieldName('email')}>
         <Input
-          error={getErrorMessageByFiledName('email')}
+          error={getErrorMessageByFieldName('email')}
           placeholder="E-mail"
           value={email}
           onChange={handleEmailChange}

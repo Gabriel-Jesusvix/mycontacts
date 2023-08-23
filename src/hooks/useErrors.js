@@ -1,26 +1,28 @@
 import { useState, useCallback } from 'react';
 
-export default function useErrors() {
-  const [errors, setErrors] = useState([]);
+export default function useErros() {
+  const [errors, setErros] = useState([]);
 
-  const setError = useCallback(({ filed, message }) => {
-    const errorAlreadyExists = errors.find((error) => error.filed === filed);
+  const setError = useCallback(({ field, message }) => {
+    const errorAlreadyExists = errors.find((error) => error.field === field);
 
     if (errorAlreadyExists) {
       return;
     }
 
-    setErrors((prevState) => [
+    setErros((prevState) => [
       ...prevState,
-      { filed, message },
+      { field, message },
     ]);
   }, [errors]);
 
-  const removeError = useCallback((filedName) => {
-    setErrors((prevState) => prevState.filter((error) => error.filed !== filedName));
+  const removeError = useCallback((fieldName) => {
+    setErros((prevState) => prevState.filter(
+      (error) => error.field !== fieldName,
+    ));
   }, []);
 
-  const getErrorMessageByFiledName = useCallback((fildName) => (
+  const getErrorMessageByFieldName = useCallback((fildName) => (
     errors.find((error) => error.field === fildName)?.message
   ), [errors]);
 
@@ -28,6 +30,6 @@ export default function useErrors() {
     errors,
     setError,
     removeError,
-    getErrorMessageByFiledName,
+    getErrorMessageByFieldName,
   };
 }

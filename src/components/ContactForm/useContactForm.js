@@ -1,9 +1,9 @@
-import { useImperativeHandle, useState, useEffect } from 'react';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
-import useErrors from '../../hooks/useErrors';
+import { useState, useEffect, useImperativeHandle } from 'react';
+import isEmailValid from '../../utils/isEmailValid';
 import formatPhone from '../../utils/formatPhone';
+import useErros from '../../hooks/useErrors';
 import CategoriesService from '../../services/CategoriesService';
-import isValidEmail from '../../utils/isEmailValid';
+import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
 
 export default function useContactForm(onSubmit, ref) {
   const [name, setName] = useState('');
@@ -11,51 +11,53 @@ export default function useContactForm(onSubmit, ref) {
   const [phone, setPhone] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useSafeAsyncState([]);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [isLoadingCategories, setIsLoadingCategories] = useSafeAsyncState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {
-    setError, removeError, getErrorMessageByFiledName, errors,
-  } = useErrors();
-  const isFormValid = (name && errors.length === 0);
 
+  const {
+    errors,
+    setError,
+    removeError,
+    getErrorMessageByFieldName,
+  } = useErros();
+
+  const isFormValid = (name && errors.length === 0);
+  // ?? nullish coalescing operator
   useImperativeHandle(ref, () => ({
     setFieldsValues: (contact) => {
-      setName(contact.name || '');
-      setEmail(contact.email || '');
-      setPhone(formatPhone(contact.phone) || '');
-      setCategoryId(contact.category.id || '');
+      setName(contact.name ?? '');
+      setEmail(contact.email ?? '');
+      setPhone(contact.phone ?? '');
+      setCategoryId(contact.category.id ?? '');
     },
-    resetFileds: () => {
+    resetFields: () => {
       setName('');
       setEmail('');
       setPhone('');
-      setCategories('');
+      setCategoryId('');
     },
-  }));
+  }), []);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     async function loadCategories() {
       try {
-        const categoriesList = await CategoriesService.listCategories(controller.signal);
+        setIsLoadingCategories(true);
+        const categoriesList = await CategoriesService.listCategories();
+
         setCategories(categoriesList);
-      } catch {
-      } finally {
+      } catch {} finally {
         setIsLoadingCategories(false);
       }
     }
 
     loadCategories();
-    return () => {
-      controller.abort();
-    };
-  }, [setCategories]);
+  }, [setIsLoadingCategories, setCategories]);
 
   function handleNameChange(event) {
     setName(event.target.value);
+
     if (!event.target.value) {
-      setError({ filed: 'name', message: 'Nome é obrigatório' });
+      setError({ field: 'name', message: 'Nome é obrigatório' });
     } else {
       removeError('name');
     }
@@ -63,8 +65,9 @@ export default function useContactForm(onSubmit, ref) {
 
   function handleEmailChange(event) {
     setEmail(event.target.value);
-    if (event.target.value && !isValidEmail(event.target.value)) {
-      setError({ filed: 'email', message: 'E-mail inválido' });
+
+    if (event.target.value && !isEmailValid(event.target.value)) {
+      setError({ field: 'email', message: 'E-mail inválido' });
     } else {
       removeError('email');
     }
@@ -78,8 +81,9 @@ export default function useContactForm(onSubmit, ref) {
     event.preventDefault();
 
     setIsSubmitting(true);
+
     await onSubmit({
-      name, email, phone: phone.replace(/\D/g, ''), categoryId,
+      name, email, phone, categoryId,
     });
 
     setIsSubmitting(false);
@@ -87,7 +91,7 @@ export default function useContactForm(onSubmit, ref) {
 
   return {
     handleSubmit,
-    getErrorMessageByFiledName,
+    getErrorMessageByFieldName,
     name,
     handleNameChange,
     isSubmitting,
@@ -97,8 +101,8 @@ export default function useContactForm(onSubmit, ref) {
     handlePhoneChange,
     isLoadingCategories,
     categoryId,
-    setCategoryId,
     categories,
     isFormValid,
+    setCategoryId,
   };
 }

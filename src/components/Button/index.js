@@ -7,7 +7,7 @@ export function Button({
   isLoading = false,
   disabled = false,
   children,
-  danger = false,
+  danger,
   onClick,
 }) {
   return (
@@ -24,10 +24,18 @@ export function Button({
 }
 
 Button.propTypes = {
-  type: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  disabled: PropTypes.bool.isRequired,
+  type: PropTypes.string,
+  isLoading: PropTypes.bool,
+  disabled: PropTypes.bool,
   children: PropTypes.node.isRequired,
-  danger: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired,
+  danger: PropTypes.bool,
+  onClick: PropTypes.func,
+};
+
+Button.defaultProps = {
+  type: 'button',
+  disabled: false,
+  isLoading: false,
+  danger: false,
+  onClick: undefined,
 };
