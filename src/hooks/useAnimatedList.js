@@ -5,7 +5,6 @@ import {
 export default function useAnimatedList(initialValue = []) {
   const [items, setItems] = useState(initialValue);
   const [pendingRemovalItemsIds, setPendingRemovalItemsIds] = useState([]);
-
   const animatedRefs = useRef(new Map());
   const animationEndListeners = useRef(new Map());
 
