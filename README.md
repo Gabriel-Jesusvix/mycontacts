@@ -6,9 +6,8 @@
 
 
 # 💻 MyContacts
-Application with emphasis on creating a contact network, you can register contacts and categorize these contacts.
 
-- the application is raw, with the objective of training relevant concepts in a process of creating a web system.
+<p> Manage your contact list through the platform, where you can insert, update or remove a contact. You can also search and identify them by categories!</p>
 
 ## Learnings
 
@@ -33,15 +32,69 @@ Application with emphasis on creating a contact network, you can register contac
 - Create new contact
 - Delete contact;
 
+## 👨‍💻 Tecnologias
+These were the technologies used in this project!
 
-## Stack utilizada
+<br>
 
-**Front-end:** React CRA, StyledComponents, React Router Dom.
+Backend:
+- [Node.JS](https://nodejs.org/en/)
+- [Express](https://expressjs.com/pt-br/)
+- [Express Async Errors](https://www.npmjs.com/package/express-async-errors)
+- [Docker](https://www.docker.com/)
+- [Postgres](https://www.postgresql.org/)
 
-**Back-end:** Node, Express , Docker.
+<br>
+
+Frontend:
+- [React](https://reactjs.org/)
+- [React DOM](https://reactjs.org/docs/react-dom.html)
+- [React Router DOM](https://reactrouter.com/en/main)
+- [Prop Types](https://www.npmjs.com/package/prop-types)
+- [Styled Components](https://styled-components.com/)
+- [Vite](https://vitejs.dev/)
+
+<br>
 
 
 ## Instalação
+
+Rode os comandos abaixos para instalar a imagem do Postgres no Docker.
+```bash
+# Baixar a imagem
+$ docker pull postgres
+
+# Criar o container
+$ docker run --name pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres
+
+# Caso não tenha iniciado automaticamente, rode:
+$ docker start pg
+
+# Para verificar se o container está rodando, rode:
+$ docker ps
+```
+
+<br>
+
+Após colocar o container para rodar, você precisará criar o Banco de Dados e as tabelas manualmente.
+```bash
+# Acesse o banco de dados
+$ docker exec -it pg bash
+
+# Entre no usuário que você criou, no caso, criamos o root
+$ psql -U root
+
+# Para criar o banco de dados, cole a instrução abaixo
+$ CREATE DATABASE mycontacts;
+
+# Acesse o banco recém criado
+$ \c mycontacts
+
+# Dentro do arquivo schema.sql, você encontrará o restante das instruções 
+# para criar as tabelas necessárias da nossa aplicação
+```
+
+<br>
 
 Install mycontacts with npm or yarn;
 
@@ -53,8 +106,12 @@ Install mycontacts with npm or yarn;
 ```
     
 ## Screenshots
+![Screen Recording 2023-08-24 at 18 00 44](https://github.com/Gabriel-Jesusvix/mycontacts/assets/62946928/7d8e91ec-2b39-4935-aadf-4501f441e6ff)
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+![Screen Recording 2023-08-24 at 18 00 44](https://github.com/Gabriel-Jesusvix/mycontacts/assets/62946928/ecf85e4e-5981-42b0-ae1e-276885282625)
+
+
 
 
 
