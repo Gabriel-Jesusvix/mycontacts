@@ -16,7 +16,9 @@ export default function useAnimatedList(initialValue = []) {
     animatedRefs.current.delete(itemId);
 
     setItems((prevState) => prevState.filter((item) => item.id !== itemId));
-    setPendingRemovalItemsIds((prevState) => prevState.filter((id) => itemId !== id));
+    setPendingRemovalItemsIds(
+      (prevState) => prevState.filter((id) => itemId !== id),
+    );
   }, []);
 
   useEffect(() => {

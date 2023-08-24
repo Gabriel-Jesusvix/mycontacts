@@ -20,10 +20,11 @@ export function ToastContainer() {
         },
       ]);
     }
+
     toastEventManager.on('addtoast', handleAddToast);
 
     return () => {
-      toastEventManager.removeListener('addtoast');
+      toastEventManager.removeListener('addtoast', handleAddToast);
     };
   }, [setMessages]);
 

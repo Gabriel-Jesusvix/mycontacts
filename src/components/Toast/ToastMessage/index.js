@@ -11,16 +11,17 @@ function ToastMessage({
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onRemoveMessage(message.id);
-    }, message.duration);
+    }, message.duration || 5000);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [message, onRemoveMessage, isLeaving]);
+  }, [message, onRemoveMessage]);
 
   function handleRemoveToast() {
     onRemoveMessage(message.id);
   }
+
   return (
     <Container
       type={message.type}
